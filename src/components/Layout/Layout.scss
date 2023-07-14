@@ -1,0 +1,129 @@
+@import "../../styles/app";
+
+// layout
+#layout {
+  background-color: var(--fondo);
+  .v-main__wrap {
+    // padding: 4rem $content-padding 70px $content-padding;
+    padding-inline: 0;
+    padding-bottom: clamp(6rem, 100vh, 350px);
+    padding-top: clamp(3rem, 22vh , 8rem);
+  }
+  @media (max-width: 1255px) {
+    .v-main__wrap {
+      padding-bottom: clamp(6rem, 100vh, 520px) !important;
+    }
+  }
+  @media (max-width: 570px) {
+    .v-main__wrap {
+      padding-bottom: clamp(6rem, 100vh, 600px) !important;
+    }
+  }
+  @media (max-width: 550px) {
+    .v-main__wrap {
+      padding-bottom: clamp(6rem, 100vh, 700px) !important;
+    }
+  }
+  @media (max-width: 300px) {
+    .v-main__wrap {
+      padding-bottom: clamp(6rem, 100vh, 750px) !important;
+    }
+  }
+}
+
+/////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
+
+// header
+#headerApp {
+  font-size: 17px;
+  .contleft {
+    gap: 1em;
+    .toggle {
+      z-index: 10;
+      background-color: #656565;
+    }
+    .logo {
+      width: clamp(6em, 12vw, 12em);
+      height: clamp(3em, 5vw, 5em);
+    }
+  }
+  .contmiddle {
+    gap: clamp(0em, 3vw, 3em);
+    a {
+      position: relative;
+      font-weight: 400;
+      -webkit-text-stroke: 0.2px var(--color);
+      -moz-text-stroke: 0.2px var(--color);
+    }
+    a:hover:before {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      margin-inline: auto;
+      background-color: $color-boton;
+      width: 90%;
+      height: 3px;
+      animation: linea 0.2s;
+    }
+    @keyframes linea {
+      0% {
+        transform: scaleX(0);
+      }
+      100% {
+        transform: scaleX(1);
+      }
+    }
+  }
+  .contright {
+    .walletButton {
+      margin-left: clamp(1em, 2vw, 2em);
+      box-shadow: $sombra-boton !important;
+      span {
+        font-weight: 400;
+        -webkit-text-stroke: 0.2px #FFFFFF;
+        -moz-text-stroke: 0.2px #FFFFFF;
+        color: #FFFFFF !important;
+      }
+    }
+  }
+}
+
+/////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////
+
+// footer
+.v-footer {
+  padding-block: 4em 3em;
+  .row {
+    justify-content: center;
+    gap: 1em;
+    @include media-breakpoint-up(sm) {
+      justify-content: space-between;
+    }
+    .logoFooter {
+      width: clamp(12em, 20vw, 20em);
+      height: clamp(5em, 7vw, 7em);
+    }
+    .contcenter {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: clamp(1em, 1vw, 2em);
+      a {
+        line-height: 3.3ch;
+      }
+    }
+  }
+}
+@media (max-width: 1250px) and (max-height: 1180px) {
+  .v-footer {
+    .row {
+      section {
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+  }
+}
