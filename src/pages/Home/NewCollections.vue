@@ -36,6 +36,10 @@
     <!-- dialog -->
     <v-row justify="center">
       <v-dialog v-model="dialog" persistent width="auto">
+        <v-overlay z-index="5" color="black" :value="overlay">
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+          Loading...
+        </v-overlay>
         <v-card>
           <v-card-title>
             <span class="text-h5">Place a Bid</span>
@@ -43,61 +47,113 @@
           <v-card-text>
             <v-container>
               <v-row>
-                <v-col cols="12" sm="9" md="7">
+                <v-col cols="12" sm="6" md="6">
                   <v-img
                     class="bg-grey-lighten-2"
-                    width="500"
+                    width="550"
                     :aspect-ratio="1"
                     :src="img"
                     cover
                   ></v-img>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <span class="text-h6">
-                    <div style="text-align: justify">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua. Congue quisque egestas diam in arcu cursus
-                      euismod. Felis donec et odio pellentesque diam volutpat
-                      commodo. Ultrices in iaculis nunc sed augue lacus viverra
-                      vitae. Sed vulputate odio ut enim blandit volutpat
-                      maecenas volutpat blandit.
-                    </div>
-                  </span>
-                  <v-divider class="mt-3"></v-divider>
-                  <span class="text-h6">
-                    <div style="text-align: justify" class="mt-3">
-                      <v-icon size="large">mdi-clock</v-icon>
-                      <span class="text-h7 ml-2">Auction ends in</span>
-                      <p class="text-h6 mt-2 mb-2">00 days 00:00:00</p>
+                <v-col cols="12" sm="6" md="6" class="pl-10">
+                  <v-card color="basil">
+                    <v-tabs
+                      v-model="tab"
+                      background-color="transparent"
+                      color="basil"
+                      grow
+                    >
+                      <v-tab v-for="item in items" :key="item">
+                        {{ item }}
+                      </v-tab>
+                    </v-tabs>
 
-                      <v-form
-                        ref="form"
-                        v-model="valid"
-                        lazy-validation
-                        class="mt-3"
-                      >
-                        <v-text-field
-                          v-model="bid"
-                          :label="'Mininum bid ($' + price + ')'"
-                          :rules="[
-                            rules.required,
-                            rules.loanMin
-                          ]"
-                          type="number"
-                        ></v-text-field>
+                    <v-tabs-items v-model="tab">
+                      <v-tab-item>
+                        <v-card color="basil" flat>
+                          <v-card-text
+                            class="text-h6"
+                            style="text-align: justify"
+                            >{{ text1 }}</v-card-text
+                          >
+                          <v-divider class="mt-3"></v-divider>
+                          <span class="text-h6">
+                            <div style="text-align: justify" class="mt-3">
+                              <v-icon size="large">mdi-clock</v-icon>
+                              <span class="text-h7 ml-2">Auction ends in</span>
+                              <p class="text-h6 mt-2 mb-2">00 days 00:00:00</p>
 
-                        <v-btn
-                          :disabled="!valid"
-                          @click="saveForm"
-                          block
-                          class="b1 h8-em mt-2"
-                          color="#D8D8D8"
-                          >Place a Bid</v-btn
-                        >
-                      </v-form>
-                    </div>
-                  </span>
+                              <v-form
+                                ref="form"
+                                v-model="valid"
+                                lazy-validation
+                                class="mt-8"
+                              >
+                                <v-text-field
+                                  v-model="bid"
+                                  :label="'Mininum bid ($' + price + ')'"
+                                  :rules="[rules.required, rules.loanMin]"
+                                  type="number"
+                                ></v-text-field>
+
+                                <v-btn
+                                  :disabled="!valid"
+                                  @click="saveForm"
+                                  :loading="loading"
+                                  block
+                                  class="b1 h8-em mt-2"
+                                  color="#D8D8D8"
+                                  >Place a Bid
+                                  <template v-slot:loader>
+                                    <span class="custom-loader">
+                                      <v-icon light>mdi-cached</v-icon>
+                                    </span>
+                                  </template>
+                                </v-btn>
+                              </v-form>
+                            </div>
+                          </span>
+                        </v-card>
+                      </v-tab-item>
+                      <v-tab-item>
+                        <v-card color="basil" flat>
+                          <v-card-text style="text-align: justify">
+                            <v-list three-line>
+                              <template v-for="(item, index) in itemslist">
+                                <v-subheader
+                                  v-if="item.header"
+                                  :key="item.header"
+                                  v-text="item.header"
+                                ></v-subheader>
+
+                                <v-divider
+                                  v-else-if="item.divider"
+                                  :key="index"
+                                  :inset="item.inset"
+                                ></v-divider>
+
+                                <v-list-item v-else :key="item.title">
+                                  <v-list-item-avatar>
+                                    <v-img :src="item.avatar"></v-img>
+                                  </v-list-item-avatar>
+
+                                  <v-list-item-content>
+                                    <v-list-item-title
+                                      v-html="item.title"
+                                    ></v-list-item-title>
+                                    <v-list-item-subtitle
+                                      v-html="item.subtitle"
+                                    ></v-list-item-subtitle>
+                                  </v-list-item-content>
+                                </v-list-item>
+                              </template>
+                            </v-list>
+                          </v-card-text>
+                        </v-card>
+                      </v-tab-item>
+                    </v-tabs-items>
+                  </v-card>
                 </v-col>
               </v-row>
             </v-container>
@@ -112,7 +168,7 @@
       </v-dialog>
       <!-- snackbar -->
       <v-snackbar v-model="snackbar" :timeout="-1" :color="color" :top="true">
-        <b>{{ text }}</b>
+        <b class="text-h6">{{ text }}</b>
 
         <template v-slot:action="{ attrs }">
           <v-btn
@@ -135,16 +191,47 @@ export default {
     return {
       dialog: false,
       snackbar: false,
+      overlay: false,
       valid: true,
       text: "Bid placed successfully",
       bid: "",
       color: "success",
       rules: {
         required: (value) => !!value || "Required.",
-        loanMin: (value) => value >= this.price || "Bid should be above $" + this.price,
+        loanMin: (value) =>
+          value >= this.price || "Bid should be above $" + this.price,
       },
       img: null,
       price: 0,
+      tab: null,
+      items: ["Details", "Bids"],
+      itemslist: [
+        {
+          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+          title: "adominguez@gmail.com",
+          subtitle: `<span class="text--primary">Offered</span> &mdash; $ 350`,
+        },
+        { divider: true, inset: true },
+        {
+          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
+          title: "adominguez1@gmail.com",
+          subtitle: `<span class="text--primary">Offered</span> &mdash; $ 348`,
+        },
+        { divider: true, inset: true },
+        {
+          avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
+          title: "adominguez21@gmail.com",
+          subtitle: `<span class="text--primary">Offered</span> &mdash; $ 346`,
+        },
+        { divider: true, inset: true },
+        {
+          avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
+          title: "adominguez21@gmail.com",
+          subtitle: `<span class="text--primary">Offered</span> &mdash; $ 345`,
+        },
+      ],
+      text1:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
       dataNewCollections: [
         {
           collection: [
@@ -204,12 +291,17 @@ export default {
   methods: {
     saveForm() {
       if (this.$refs.form.validate()) {
-        this.dialog = false;
-        this.snackbar = true;
+        this.overlay = true;
         // Text for bid reult, success or error, Bid placed successfully for succes, An error ocurred for error
         this.text = "Bid placed successfully";
         // Success or error dependeing on result
         this.color = "success";
+        setTimeout(() => {
+          this.dialog = false;
+          this.snackbar = true;
+          this.overlay = false;
+          this.$refs.form.reset();
+        }, 1500);
       }
     },
     openBid(img, price) {
