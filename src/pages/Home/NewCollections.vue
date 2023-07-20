@@ -10,23 +10,23 @@
       :key="index"
     >
       <v-card
-        v-for="(item2, index) in item.collection"
+        v-for="(object, index) in item.collection"
         :key="index"
         color="var(--colorCartas3)"
       >
-        <img class="images" :src="item2.img" alt="collections images" />
-        <a href="#" class="tl h6">{{ item2.title }}</a>
+        <img class="images" :src="object.url_object  " alt="collections images" />
+        <a href="#" class="tl h6">{{ object.title }}</a>
         <aside class="sectdown divcol">
           <div class="space">
             <span class="h7 weight">Bid</span>
             <div class="divrow acenter">
-              <span class="price h7">$ {{ item2.dollar }} Dollars</span>
+              <span class="price h7">$ {{ object.last_bid }} Dollars</span>
             </div>
           </div>
-          <span class="h7 weight tend"> Minimun Bid $ {{ item2.dollar }} </span>
+          <span class="h7 weight tend"> Minimun Bid $ {{ object.init_price }} </span>
           <v-btn
             class="b1 h8-em mt-8"
-            @click="openBid(item2.img, item2.dollar)"
+            @click="openBid(object)"
             color="#D8D8D8"
             >Place a Bid</v-btn
           >
@@ -52,7 +52,7 @@
                     class="bg-grey-lighten-2"
                     width="550"
                     :aspect-ratio="1"
-                    :src="img"
+                    :src="selected.url_object"
                     cover
                   ></v-img>
                 </v-col>
@@ -75,14 +75,16 @@
                           <v-card-text
                             class="text-h6"
                             style="text-align: justify"
-                            >{{ text1 }}</v-card-text
+                          >
+                            {{selected.details}}
+                          </v-card-text
                           >
                           <v-divider class="mt-3"></v-divider>
                           <span class="text-h6">
                             <div style="text-align: justify" class="mt-3">
                               <v-icon size="large">mdi-clock</v-icon>
                               <span class="text-h7 ml-2">Auction ends in</span>
-                              <p class="text-h6 mt-2 mb-2">00 days 00:00:00</p>
+                              <p class="text-h6 mt-2 mb-2">{{selected.ends_in}}</p>
 
                               <v-form
                                 ref="form"
@@ -91,8 +93,8 @@
                                 class="mt-8"
                               >
                                 <v-text-field
-                                  v-model="bid"
-                                  :label="'Mininum bid ($' + price + ')'"
+                                  v-model="bid.value"
+                                  :label="'Minimun bid ($' + selected.last_bid + ')'"
                                   :rules="[rules.required, rules.loanMin]"
                                   type="number"
                                 ></v-text-field>
@@ -120,31 +122,33 @@
                         <v-card color="basil" flat>
                           <v-card-text style="text-align: justify">
                             <v-list three-line>
-                              <template v-for="(item, index) in itemslist">
-                                <v-subheader
-                                  v-if="item.header"
-                                  :key="item.header"
-                                  v-text="item.header"
-                                ></v-subheader>
+                              <template v-for="(item, index) in bids">
+                                <!-- <v-subheader
+                                  v-if="item.user"
+                                  :key="item.user"
+                                >
+                                  
+                                </v-subheader>
 
                                 <v-divider
-                                  v-else-if="item.divider"
+                                  v-else-if="item.user"
                                   :key="index"
-                                  :inset="item.inset"
-                                ></v-divider>
+                                  :inset="item.user"
+                                >
+                                Value 2</v-divider> -->
 
-                                <v-list-item v-else :key="item.title">
+                                <v-list-item :key="item.id">
                                   <v-list-item-avatar>
-                                    <v-img :src="item.avatar"></v-img>
+                                    <v-img :src="'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfeoxz_Y3zQGazrjq06VFS37K5y8Ls-tXK1ROWFM_DRQ&s'"></v-img>
                                   </v-list-item-avatar>
 
                                   <v-list-item-content>
-                                    <v-list-item-title
-                                      v-html="item.title"
-                                    ></v-list-item-title>
-                                    <v-list-item-subtitle
-                                      v-html="item.subtitle"
-                                    ></v-list-item-subtitle>
+                                    <v-list-item-title>
+                                      {{item.user}}
+                                    </v-list-item-title>
+                                    <v-list-item-subtitle>
+                                      <span class="text--primary">Offered</span> &mdash; $ {{item.value}}
+                                    </v-list-item-subtitle>
                                   </v-list-item-content>
                                 </v-list-item>
                               </template>
@@ -185,136 +189,106 @@
   </section>
 </template>
 <script>
-export default {
-  name: "NewCollections",
-  data() {
-    return {
-      dialog: false,
-      snackbar: false,
-      overlay: false,
-      valid: true,
-      text: "Bid placed successfully",
-      bid: "",
-      color: "success",
-      rules: {
-        required: (value) => !!value || "Required.",
-        loanMin: (value) =>
-          value >= this.price || "Bid should be above $" + this.price,
+  export default {
+    name: "NewCollections",
+    data() {
+      return {
+        loading: true,
+        dialog: false,
+        snackbar: false,
+        overlay: false,
+        valid: true,
+        text: "Bid placed successfully",
+        bid: {value: 0},
+        color: "success",
+        rules: {
+          required: (value) => !!value || "Required.",
+          loanMin: (value) =>
+            value > this.selected.last_bid || "Bid should be above $" + this.selected.last_bid,
+        },
+        img: null,
+        price: 0,
+        tab: null,
+        items: ["Details", "Bids"],
+        bids: [
+          {
+            avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
+            title: "adominguez@gmail.com",
+            subtitle: ``,
+          },
+          { divider: true, inset: true },
+          {
+            avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
+            title: "adominguez1@gmail.com",
+            subtitle: `<span class="text--primary">Offered</span> &mdash; $ 348`,
+          },
+          { divider: true, inset: true },
+          {
+            avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
+            title: "adominguez21@gmail.com",
+            subtitle: `<span class="text--primary">Offered</span> &mdash; $ 346`,
+          },
+          { divider: true, inset: true },
+          {
+            avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
+            title: "adominguez21@gmail.com",
+            subtitle: `<span class="text--primary">Offered</span> &mdash; $ 345`,
+          },
+        ],
+        text1:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        selected: {},
+        dataNewCollections: [{},],
+      };
+    },
+    mounted() {
+      this.fetchAuctions()
+    },
+    methods: {
+      fetchAuctions() {
+        this.loading = true;
+        this.axios.get("api/auction").then((res) => {
+          this.dataNewCollections[0].collection = res.data;
+          this.loading= false;
+        })
       },
-      img: null,
-      price: 0,
-      tab: null,
-      items: ["Details", "Bids"],
-      itemslist: [
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/1.jpg",
-          title: "adominguez@gmail.com",
-          subtitle: `<span class="text--primary">Offered</span> &mdash; $ 350`,
-        },
-        { divider: true, inset: true },
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/2.jpg",
-          title: "adominguez1@gmail.com",
-          subtitle: `<span class="text--primary">Offered</span> &mdash; $ 348`,
-        },
-        { divider: true, inset: true },
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/3.jpg",
-          title: "adominguez21@gmail.com",
-          subtitle: `<span class="text--primary">Offered</span> &mdash; $ 346`,
-        },
-        { divider: true, inset: true },
-        {
-          avatar: "https://cdn.vuetifyjs.com/images/lists/4.jpg",
-          title: "adominguez21@gmail.com",
-          subtitle: `<span class="text--primary">Offered</span> &mdash; $ 345`,
-        },
-      ],
-      text1:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-      dataNewCollections: [
-        {
-          collection: [
-            {
-              title: "Lorem Ipsum",
-              img: require("@/assets/collections/c1.png"),
-              near: "14",
-              dollar: "350",
-            },
-            {
-              title: "Lorem Ipsum",
-              img: require("@/assets/collections/c2.png"),
-              near: "14",
-              dollar: "220",
-            },
-            {
-              title: "Lorem Ipsum",
-              img: require("@/assets/collections/c3.png"),
-              near: "14",
-              dollar: "150",
-            },
-            {
-              title: "Lorem Ipsum",
-              img: require("@/assets/collections/c4.png"),
-              near: "14",
-              dollar: "80",
-            },
-            {
-              title: "Lorem Ipsum",
-              img: require("@/assets/collections/c5.png"),
-              near: "14",
-              dollar: "550",
-            },
-            {
-              title: "Lorem Ipsum",
-              img: require("@/assets/collections/c6.png"),
-              near: "14",
-              dollar: "321",
-            },
-            {
-              title: "Lorem Ipsum",
-              img: require("@/assets/collections/c7.png"),
-              near: "14",
-              dollar: "160",
-            },
-            {
-              title: "Lorem Ipsum",
-              img: require("@/assets/collections/c8.png"),
-              near: "14",
-              dollar: "543",
-            },
-          ],
-        },
-      ],
-    };
-  },
-  methods: {
-    saveForm() {
-      if (this.$refs.form.validate()) {
-        this.overlay = true;
+      fetchBids(auction) {
+        this.axios.get("api/bid/?auction_id="+auction.id).then((res) => {
+          this.bids = res.data;
+        })
+      },
+      saveForm() {
+        if (this.$refs.form.validate()) {
+          this.overlay = true;
+          this.axios.post("api/bid/", this.bid).then((res) => {
+            this.bid = res.data
+            this.finalizePost("Bid placed successfully", "success");
+          }).catch((error) => {
+            this.finalizePost(error.response.data, "error");
+          })
+        }
+      },
+      finalizePost(message, color) {
         // Text for bid reult, success or error, Bid placed successfully for succes, An error ocurred for error
-        this.text = "Bid placed successfully";
+        this.text = message
         // Success or error dependeing on result
-        this.color = "success";
-        setTimeout(() => {
-          this.dialog = false;
-          this.snackbar = true;
-          this.overlay = false;
-          this.$refs.form.reset();
-        }, 1500);
-      }
+        this.color = color;
+        this.dialog = false;
+        this.snackbar = true;
+        this.overlay = false;
+        this.$refs.form.reset();
+      },
+      openBid(auction) {
+        this.dialog = true;
+        this.selected = auction;
+        this.fetchBids(auction);
+        this.bid = {value: auction.last_bid + 1, email: '', auction: auction.id};
+      },
+      close() {
+        this.dialog = false;
+        this.$refs.form.reset();
+      },
     },
-    openBid(img, price) {
-      this.dialog = true;
-      this.img = img;
-      this.price = price;
-    },
-    close() {
-      this.dialog = false;
-      this.$refs.form.reset();
-    },
-  },
-};
+  };
 </script>
 
 <style src="../Pages.scss" lang="scss" />

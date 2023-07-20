@@ -28,7 +28,7 @@
             </v-col>
           </v-col>
           <v-row justify="center">
-            <v-dialog v-model="dialog" persistent max-width="600px">
+            <v-dialog v-model="dialog_login" persistent max-width="600px">
               <v-overlay z-index="5" color="black" :value="overlay">
                 <v-progress-circular
                   indeterminate
@@ -52,7 +52,7 @@
                         <v-col cols="12">
                           <v-text-field
                             label="Email*"
-                            v-model="email"
+                            v-model="user.email"
                             :rules="emailRules"
                             required
                           ></v-text-field>
@@ -61,7 +61,7 @@
                           <v-text-field
                             label="Password*"
                             type="password"
-                            v-model="passwd"
+                            v-model="user.passwd"
                             :rules="passwdRules"
                             required
                           ></v-text-field>
@@ -71,7 +71,7 @@
                     <small>*indicates required field</small>
                     <v-btn
                       :disabled="!valid"
-                      @click="saveForm"
+                      @click="postLogin"
                       :loading="loading"
                       block
                       class="b1 h8-em mt-2"
@@ -90,7 +90,7 @@
                   <v-btn
                     class="b1 h8-em"
                     color="#D8D8D8"
-                    @click="close1"
+                    @click="closeLogin"
                   >
                     Close
                   </v-btn>
@@ -103,7 +103,7 @@
           </v-row>
 
           <v-row justify="center">
-            <v-dialog v-model="dialog1" persistent max-width="600px">
+            <v-dialog v-model="dialog_register" persistent max-width="600px">
               <v-overlay z-index="5" color="black" :value="overlay">
                 <v-progress-circular
                   indeterminate
@@ -127,7 +127,7 @@
                         <v-col cols="12" sm="12" md="12">
                           <v-text-field
                             label="First name*"
-                            v-model="name"
+                            v-model="user.first_name"
                             :rules="passwdRules"
                             required
                           ></v-text-field>
@@ -135,7 +135,7 @@
                         <v-col cols="12" sm="12" md="12">
                           <v-text-field
                             label="Last name*"
-                            v-model="lastname"
+                            v-model="user.last_name"
                             :rules="passwdRules"
                             required
                           ></v-text-field>
@@ -143,7 +143,7 @@
                         <v-col cols="12">
                           <v-text-field
                             label="Email*"
-                            v-model="email"
+                            v-model="user.email"
                             :rules="emailRules"
                             required
                           ></v-text-field>
@@ -152,7 +152,7 @@
                           <v-text-field
                             label="Password*"
                             type="password"
-                            v-model="passwd"
+                            v-model="user.passwd"
                             :rules="passwdRules"
                             required
                           ></v-text-field>
@@ -160,14 +160,14 @@
                         <v-col cols="12">
                           <v-text-field
                             label="Phone Number*"
-                            v-model="number"
+                            v-model="user.number"
                             :rules="passwdRules"
                             required
                           ></v-text-field>
                         </v-col>
                         <v-btn
                           :disabled="!valid"
-                          @click="saveForm1"
+                          @click="postRegister"
                           :loading="loading"
                           block
                           class="b1 h8-em mt-2"
@@ -189,7 +189,7 @@
                   <v-btn
                     class="b1 h8-em"
                     color="#D8D8D8"
-                    @click="close2"
+                    @click="closeRegister"
                   >
                     Close
                   </v-btn>
@@ -212,19 +212,13 @@
               </v-btn>
             </template>
           </v-snackbar>
-          <aside class="contright">
-            <!--
-          <v-btn v-if="themeButton" icon width="2.8em" height="2.8em"
-            @click="CambiarTheme('dark'), CambiarTheme2('dark')">
-            <v-icon size="clamp(2em, 2vw, 3em)">mdi-weather-night</v-icon>
-          </v-btn>
-          <v-btn v-if="themeButton" icon width="2.8em" height="2.8em"
-            @click="CambiarTheme('light'), CambiarTheme2('light')">
-            <img src="@/assets/icons/icon-theme-dark.png" style="width: clamp(2em, 2vw, 3em)">
-          </v-btn>
-          -->
-
-            <v-btn class="walletButton" color="#656565" @click="dialog = true">
+          <aside class="contright" v-if="username">
+            <span>
+              {{username}}
+            </span>
+          </aside>
+          <aside class="contright" v-else>
+            <v-btn class="walletButton" color="#656565" @click="dialog_login = true">
               Login
             </v-btn>
           </aside>
@@ -237,140 +231,128 @@
 </template>
 
 <script>
-import MenuHeader from "./MenuHeader.vue";
-
-// let ubicacionPrincipal = window.pageYOffset;
-// let resizeTimeout;
-// function resizeThrottler(actualResizeHandler) {
-//   // ignore resize events as long as an actualResizeHandler execution is in the queue
-//   if (!resizeTimeout) {
-//     resizeTimeout = setTimeout(() => {
-//       resizeTimeout = null;
-//       actualResizeHandler();
-
-//       // The actualResizeHandler will execute at a rate of 15fps
-//     }, 80);
-//   }
-// }
-export default {
-  name: "Header",
-  components: {
-    MenuHeader,
-  },
-  i18n: require("./i18n"),
-  created() {
-    this.element = document.getElementById("theme");
-    const theme = "light"; //localStorage.getItem("theme");
-    if (theme) {
-      this.CambiarTheme(theme);
-    }
-    if (theme == "light") {
-      this.themeButton = true;
-    }
-    if (theme == "dark") {
-      this.themeButton = false;
-    }
-  },
-  data() {
-    return {
-      themeButton: false,
-      dataHeader: [],
-      dialog: false,
-      dialog1: false,
-      valid: true,
-      loading: false,
-      text: "",
-      color: "success",
-      passwd: "",
-      name: "",
-      lastname: "",
-      number: "",
-      snackbar: false,
-      overlay: false,
-      passwdRules: [
-        (v) => !!v || "Required",
-      ],
-      email: "",
-      emailRules: [
-        (v) =>
-          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-          "E-mail must be valid",
-      ],
-    };
-  },
-  methods: {
-    ShowDrawer() {
-      this.$refs.menu.ShowDrawer();
+  import MenuHeader from "./MenuHeader.vue";
+  export default {
+    name: "Header",
+    components: {
+      MenuHeader,
     },
-    CambiarTheme(theme) {
-      this.$store.dispatch("CambiarTheme", { theme, element: this.element });
-      this.themeButton = !this.themeButton;
-    },
-    CambiarTheme2(theme) {
-      this.$refs.menu.OverlayMethod(theme);
-    },
-    saveForm() {
-      if (this.$refs.form.validate()) {
-        this.overlay = true;
-        // Text for bid reult, success or error, Bid placed successfully for succes, An error ocurred for error
-        this.text = "Welcome :" + this.email;
-        // Success or error dependeing on result
-        this.color = "success";
-        setTimeout(() => {
-          this.dialog = false;
-          this.snackbar = true;
-          this.overlay = false;
-          this.$refs.form.reset();
-        }, 1500);
+    i18n: require("./i18n"),
+    created() {
+      this.element = document.getElementById("theme");
+      const theme = "light"; //localStorage.getItem("theme");
+      if (theme) {
+        this.CambiarTheme(theme);
+      }
+      if (theme == "light") {
+        this.themeButton = true;
+      }
+      if (theme == "dark") {
+        this.themeButton = false;
       }
     },
-    saveForm1() {
-      if (this.$refs.form1.validate()) {
-        this.overlay = true;
+    data() {
+      return {
+        username: null,
+        themeButton: false,
+        dataHeader: [],
+        dialog_login: false,
+        dialog_register: false,
+        valid: true,
+        loading: false,
+        text: "",
+        color: "success",
+        user: {
+          passwd: "",
+          first_name: "",
+          last_name: "",
+          email: "",
+          number: "",
+        },
+        snackbar: false,
+        overlay: false,
+        passwdRules: [
+          (v) => !!v || "Required",
+        ],
+        emailRules: [
+          (v) =>
+            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+            "E-mail must be valid",
+        ],
+      };
+    },
+    mounted() {
+      this.addToken(localStorage.getItem('Authorization'));
+    },
+    methods: {
+      ShowDrawer() {
+        this.$refs.menu.ShowDrawer();
+      },
+      CambiarTheme(theme) {
+        this.$store.dispatch("CambiarTheme", { theme, element: this.element });
+        this.themeButton = !this.themeButton;
+      },
+      CambiarTheme2(theme) {
+        this.$refs.menu.OverlayMethod(theme);
+      },
+      addToken(value) {
+        if (value) {
+          this.username = localStorage.getItem('Username');
+          this.axios.defaults.headers.common.Authorization = 'token ' + value;
+        }
+      },
+      finalizePost(message, color) {
         // Text for bid reult, success or error, Bid placed successfully for succes, An error ocurred for error
-        this.text = "Welcome, successfully registered :" + this.email;
+        this.text = message;
         // Success or error dependeing on result
-        this.color = "success";
-        setTimeout(() => {
-          this.dialog1 = false;
-          this.snackbar = true;
-          this.overlay = false;
-          this.$refs.form1.reset();
-        }, 1500);
-      }
+        this.color = color;
+        // Timeout
+        this.dialog_login = false;
+        this.snackbar = true;
+        this.overlay = false;
+        this.$refs.form.reset();
+      },
+      postLogin() {
+        if (this.$refs.form.validate()) {
+          this.overlay = true;
+          this.axios.post("api/login/", {"email": this.user.email, "password": this.user.passwd}).then((res) => {
+            localStorage.setItem('Authorization', res.data.token)
+            localStorage.setItem('Username', res.data.username)
+            this.addToken(localStorage.getItem('Authorization'));
+            this.finalizePost("Welcome :" + this.user.email, "success")
+            this.closeRegister()
+          }).catch((error) => {
+            this.finalizePost(error.response.data, "error")
+          })
+        }
+      },
+      postRegister() {
+        if (this.$refs.form1.validate()) {
+          this.overlay = true;
+          this.axios.post("api/user/", this.user).then((res) => {
+            localStorage.setItem('Authorization', res.data.token)
+            localStorage.setItem('Username', res.data.username)
+            this.addToken(localStorage.getItem('Authorization'));
+            this.finalizePost("Welcome, successfully registered :" + this.user.email, "success")
+          }).catch((error) => {
+            this.finalizePost(error.response.data, "error")
+          })
+        }
+      },
+      SignUp() {
+        this.dialog_login = false;
+        this.dialog_register = true;
+      },
+      closeLogin() {
+        this.dialog_login = false;
+        this.$refs.form.reset();
+      },
+      closeRegister() {
+        this.dialog_register = false;
+        this.$refs.form1.reset();
+      },
     },
-    SignUp() {
-      this.dialog = false;
-      this.dialog1 = true;
-    },
-    close1() {
-      this.dialog = false;
-      this.$refs.form.reset();
-    },
-    close2() {
-      this.dialog1 = false;
-      this.$refs.form1.reset();
-    },
-    // OcultarNavbar() {
-    //   let Desplazamiento_Actual = window.pageYOffset;
-    //   if (ubicacionPrincipal >= Desplazamiento_Actual) {
-    //     document.getElementById("headerApp").style.top = "0";
-    //   } else {
-    //     document.getElementById("headerApp").style.top = "-100px";
-    //   }
-    //   ubicacionPrincipal = Desplazamiento_Actual;
-    // },
-    // scrollListener() {
-    //   resizeThrottler(this.OcultarNavbar);
-    // }
-  },
-  // mounted() {
-  //   document.addEventListener('scroll', this.scrollListener);
-  // },
-  // beforeDestroy() {
-  //   document.removeEventListener('scroll', this.scrollListener);
-  // }
-};
+  };
 </script>
 
 <style src="./Layout.scss" lang="scss" />
