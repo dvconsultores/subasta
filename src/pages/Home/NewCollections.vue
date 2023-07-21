@@ -122,21 +122,7 @@
                         <v-card color="basil" flat>
                           <v-card-text style="text-align: justify">
                             <v-list three-line>
-                              <template v-for="(item, index) in bids">
-                                <!-- <v-subheader
-                                  v-if="item.user"
-                                  :key="item.user"
-                                >
-                                  
-                                </v-subheader>
-
-                                <v-divider
-                                  v-else-if="item.user"
-                                  :key="index"
-                                  :inset="item.user"
-                                >
-                                Value 2</v-divider> -->
-
+                              <template v-for="item in bids">
                                 <v-list-item :key="item.id">
                                   <v-list-item-avatar>
                                     <v-img :src="'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfeoxz_Y3zQGazrjq06VFS37K5y8Ls-tXK1ROWFM_DRQ&s'"></v-img>
@@ -238,21 +224,22 @@
         text1:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
         selected: {},
         dataNewCollections: [{},],
+        interval_auction: null,
       };
     },
     mounted() {
-      this.fetchAuctions()
+      this.loading = true;
+      this.interval_auction = setInterval(() => {this.fetchAuctions()}, 3000);
     },
     methods: {
       fetchAuctions() {
-        this.loading = true;
         this.axios.get("api/auction").then((res) => {
           this.dataNewCollections[0].collection = res.data;
-          this.loading= false;
+          this.loading = false;
         })
       },
-      fetchBids(auction) {
-        this.axios.get("api/bid/?auction_id="+auction.id).then((res) => {
+      fetchBids() {
+        this.axios.get("api/bid/?auction_id="+this.selected.id).then((res) => {
           this.bids = res.data;
         })
       },
@@ -280,7 +267,7 @@
       openBid(auction) {
         this.dialog = true;
         this.selected = auction;
-        this.fetchBids(auction);
+        this.interval_bid = setInterval(() => {this.fetchBids()}, 3000);
         this.bid = {value: auction.last_bid + 1, email: '', auction: auction.id};
       },
       close() {

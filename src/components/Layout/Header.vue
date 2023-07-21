@@ -90,7 +90,7 @@
                   <v-btn
                     class="b1 h8-em"
                     color="#D8D8D8"
-                    @click="closeLogin"
+                    @click="closeDialogs"
                   >
                     Close
                   </v-btn>
@@ -189,7 +189,7 @@
                   <v-btn
                     class="b1 h8-em"
                     color="#D8D8D8"
-                    @click="closeRegister"
+                    @click="closeDialogs"
                   >
                     Close
                   </v-btn>
@@ -310,6 +310,7 @@
         this.dialog_login = false;
         this.snackbar = true;
         this.overlay = false;
+        this.closeDialogs();
         this.$refs.form.reset();
       },
       postLogin() {
@@ -320,7 +321,6 @@
             localStorage.setItem('Username', res.data.username)
             this.addToken(localStorage.getItem('Authorization'));
             this.finalizePost("Welcome :" + this.user.email, "success")
-            this.closeRegister()
           }).catch((error) => {
             this.finalizePost(error.response.data, "error")
           })
@@ -333,7 +333,7 @@
             localStorage.setItem('Authorization', res.data.token)
             localStorage.setItem('Username', res.data.username)
             this.addToken(localStorage.getItem('Authorization'));
-            this.finalizePost("Welcome, successfully registered :" + this.user.email, "success")
+            this.finalizePost("Welcome, successfully registered: " + this.user.email, "success")
           }).catch((error) => {
             this.finalizePost(error.response.data, "error")
           })
@@ -343,13 +343,9 @@
         this.dialog_login = false;
         this.dialog_register = true;
       },
-      closeLogin() {
+      closeDialogs() {
         this.dialog_login = false;
-        this.$refs.form.reset();
-      },
-      closeRegister() {
         this.dialog_register = false;
-        this.$refs.form1.reset();
       },
     },
   };
