@@ -66,31 +66,8 @@
                             required
                           ></v-text-field>
                         </v-col>
+                        <v-col cols="12"><a @click="recoverypassword" style="color: aqua;"><div style="text-align: center;">Forgot my Password</div></a></v-col>                      
                       </v-row>
-                      <v-col cols="12">
-                        <v-tooltip right v-if="!user.email">
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn
-                              plain text
-                              tile link
-                              class="no-recovery"
-                              v-bind="attrs"
-                              v-on="on"
-                            >
-                              Forgot my password
-                            </v-btn>
-                          </template>
-                          <span>First insert you email.</span>
-                        </v-tooltip>
-                        <v-btn
-                          v-else
-                          plain text
-                          tile link
-                          @click="requestRecovery"
-                        >
-                          Forgot my password
-                        </v-btn>
-                      </v-col>
                     </v-container>
                     <small>*indicates required field</small>
                     <v-btn
@@ -121,6 +98,214 @@
                   </v-btn>
                   <v-btn class="b1 h8-em" color="green" @click="signUp">
                     Sign Up
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-row>
+
+          <v-row justify="center">
+            <v-dialog v-model="dialog_recovery" persistent max-width="600px">
+              <v-overlay z-index="5" color="black" :value="overlay">
+                <v-progress-circular
+                  indeterminate
+                  size="64"
+                ></v-progress-circular>
+                Loading...
+              </v-overlay>
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">Recovery Password</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-form
+                    ref="formRecovery"
+                    v-model="valid"
+                    lazy-validation
+                    class="mt-8"
+                  >
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="Email*"
+                            v-model="user.email"
+                            :rules="emailRules"
+                            required
+                          ></v-text-field>
+                        </v-col>                  
+                      </v-row>
+                    </v-container>
+                    <small>*indicates required field</small>
+                    <v-btn
+                      :disabled="!valid"
+                      @click="postSendCode"
+                      :loading="loading"
+                      block
+                      class="b1 h8-em mt-2"
+                      color="#D8D8D8"
+                      type="submit"
+                      >Send Code
+                      <template v-slot:loader>
+                        <span class="custom-loader">
+                          <v-icon light>mdi-cached</v-icon>
+                        </span>
+                      </template>
+                    </v-btn>
+                  </v-form>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    class="b1 h8-em"
+                    color="#D8D8D8"
+                    @click="closeDialogs"
+                  >
+                    Close
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-row>
+
+          <v-row justify="center">
+            <v-dialog v-model="dialog_sendcode" persistent max-width="600px">
+              <v-overlay z-index="5" color="black" :value="overlay">
+                <v-progress-circular
+                  indeterminate
+                  size="64"
+                ></v-progress-circular>
+                Loading...
+              </v-overlay>
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">Verify code</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-form
+                    ref="formVerifyCode"
+                    v-model="valid"
+                    lazy-validation
+                    class="mt-8"
+                  >
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="Code*"
+                            v-model="user.code"
+                            :rules="passwdRules"
+                            required
+                          ></v-text-field>
+                        </v-col>                  
+                      </v-row>
+                    </v-container>
+                    <small>*indicates required field</small>
+                    <v-btn
+                      :disabled="!valid"
+                      @click="postvalidateCode"
+                      :loading="loading"
+                      block
+                      class="b1 h8-em mt-2"
+                      color="#D8D8D8"
+                      type="submit"
+                      >Verify Code
+                      <template v-slot:loader>
+                        <span class="custom-loader">
+                          <v-icon light>mdi-cached</v-icon>
+                        </span>
+                      </template>
+                    </v-btn>
+                  </v-form>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    class="b1 h8-em"
+                    color="#D8D8D8"
+                    @click="closeDialogs"
+                  >
+                    Close
+                  </v-btn>
+                  <v-btn class="b1 h8-em" color="green" @click="recoverypassword">
+                    Resend Code
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-row>
+
+          <v-row justify="center">
+            <v-dialog v-model="dialog_changePasswd" persistent max-width="600px">
+              <v-overlay z-index="5" color="black" :value="overlay">
+                <v-progress-circular
+                  indeterminate
+                  size="64"
+                ></v-progress-circular>
+                Loading...
+              </v-overlay>
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">Reset Password</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-form
+                    ref="formChangePasswd"
+                    v-model="valid"
+                    lazy-validation
+                    class="mt-8"
+                  >
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="Password*"
+                            type="password"
+                            v-model="user.passwd"
+                            :rules="passwdRules"
+                            required
+                          ></v-text-field>
+                        </v-col>
+                        <v-col cols="12">
+                          <v-text-field
+                            label="Verify Password*"
+                            type="password"
+                            v-model="user.passwdconfirm"
+                            :rules="passwdRules"
+                            required
+                          ></v-text-field>
+                        </v-col>              
+                      </v-row>
+                    </v-container>
+                    <small>*indicates required field</small>
+                    <v-btn
+                      :disabled="!valid"
+                      @click="postchangePasswd"
+                      :loading="loading"
+                      block
+                      class="b1 h8-em mt-2"
+                      color="#D8D8D8"
+                      type="submit"
+                      >Submit
+                      <template v-slot:loader>
+                        <span class="custom-loader">
+                          <v-icon light>mdi-cached</v-icon>
+                        </span>
+                      </template>
+                    </v-btn>
+                  </v-form>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    class="b1 h8-em"
+                    color="#D8D8D8"
+                    @click="closeDialogs"
+                  >
+                    Close
+                  </v-btn>
+                  <v-btn class="b1 h8-em" color="green" @click="recoverypassword">
+                    Resend Code
                   </v-btn>
                 </v-card-actions>
               </v-card>
@@ -296,6 +481,9 @@
         dataHeader: [],
         dialog_login: false,
         dialog_register: false,
+        dialog_recovery: false,
+        dialog_sendcode: false,
+        dialog_changePasswd: false,
         valid: true,
         loading: false,
         text: "",
@@ -306,6 +494,8 @@
           last_name: "",
           email: "",
           number: "",
+          code: "",
+          passwdconfirm: "",
         },
         snackbar: false,
         overlay: false,
@@ -373,6 +563,38 @@
           })
         }
       },
+      postSendCode() {
+        if (this.$refs.formRecovery.validate()) {
+          this.overlay = true;
+          this.closeDialogs();
+          this.overlay = false;
+          this.dialog_sendcode = true;
+          this.snackbar = true;
+          this.text = "We have sent a recovery message to your email.";
+          this.color = "success";
+          this.$refs.formRecovery.reset();
+        }
+      },
+      postvalidateCode() {
+        if (this.$refs.formVerifyCode.validate()) {
+          this.overlay = true;
+          this.closeDialogs();
+          this.overlay = false;
+          this.dialog_changePasswd = true;
+          this.$refs.formVerifyCode.reset();
+        }
+      },
+      postchangePasswd() {
+        if (this.$refs.formChangePasswd.validate()) {
+          this.overlay = true;
+          this.closeDialogs();
+          this.overlay = false;
+          this.snackbar = true;
+          this.text = "Password changed successfully.";
+          this.color = "success";
+          this.$refs.formChangePasswd.reset();
+        }
+      },
       postRegister() {
         if (this.$refs.form1.validate()) {
           this.overlay = true;
@@ -400,6 +622,14 @@
       closeDialogs() {
         this.dialog_login = false;
         this.dialog_register = false;
+        this.dialog_recovery = false;
+        this.dialog_sendcode = false;
+        this.dialog_changePasswd = false;
+      },
+      recoverypassword() {
+        this.dialog_login = false;
+        this.dialog_register = false;
+        this.dialog_recovery = true;
       },
       requestRecovery() {
         this.axios.post("api/recovery-email/", this.user.email).then(() => {
