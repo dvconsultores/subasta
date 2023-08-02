@@ -67,7 +67,7 @@
                           ></v-text-field>
                         </v-col>
                       </v-row>
-                      <v-col cols="12">
+                      <v-col cols="12" v-if="false">
                         <v-tooltip right v-if="!user.email">
                           <template v-slot:activator="{ on, attrs }">
                             <v-btn
