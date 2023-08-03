@@ -66,7 +66,7 @@
                             required
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12"><a @click="recoverypassword" style="color: aqua;"><div style="text-align: center;">Forgot my Password</div></a></v-col>                      
+                        <v-col cols="12"><a @click="openDialogRecoveryPasswd" style="color: aqua;"><div style="text-align: center;">Forgot my Password</div></a></v-col>                      
                       </v-row>
                     </v-container>
                     <small>*indicates required field</small>
@@ -139,7 +139,7 @@
                     <small>*indicates required field</small>
                     <v-btn
                       :disabled="!valid"
-                      @click="postSendCode"
+                      @click="postSendCode(user.email)"
                       :loading="loading"
                       block
                       class="b1 h8-em mt-2"
@@ -203,7 +203,7 @@
                     <small>*indicates required field</small>
                     <v-btn
                       :disabled="!valid"
-                      @click="postvalidateCode"
+                      @click="postVerifyCode"
                       :loading="loading"
                       block
                       class="b1 h8-em mt-2"
@@ -227,7 +227,7 @@
                   >
                     Close
                   </v-btn>
-                  <v-btn class="b1 h8-em" color="green" @click="recoverypassword">
+                  <v-btn class="b1 h8-em" color="green" @click="openDialogRecoveryPasswd">
                     Resend Code
                   </v-btn>
                 </v-card-actions>
@@ -279,8 +279,8 @@
                     </v-container>
                     <small>*indicates required field</small>
                     <v-btn
-                      :disabled="!valid"
-                      @click="postchangePasswd"
+                      :disabled="!valid && user.passwd === user.passwdconfirm"
+                      @click="postChangePasswd"
                       :loading="loading"
                       block
                       class="b1 h8-em mt-2"
@@ -304,7 +304,7 @@
                   >
                     Close
                   </v-btn>
-                  <v-btn class="b1 h8-em" color="green" @click="recoverypassword">
+                  <v-btn class="b1 h8-em" color="green" @click="openDialogRecoveryPasswd">
                     Resend Code
                   </v-btn>
                 </v-card-actions>
@@ -488,6 +488,7 @@
         loading: false,
         text: "",
         color: "success",
+        recover_email: null,
         user: {
           passwd: "",
           first_name: "",
@@ -508,7 +509,7 @@
             "E-mail must be valid",
         ],
         interval: null,
-        token: null
+        token: null,
       };
     },
     mounted() {
@@ -563,36 +564,58 @@
           })
         }
       },
-      postSendCode() {
-        if (this.$refs.formRecovery.validate()) {
-          this.overlay = true;
-          this.closeDialogs();
-          this.overlay = false;
-          this.dialog_sendcode = true;
-          this.snackbar = true;
-          this.text = "We have sent a recovery message to your email.";
-          this.color = "success";
-          this.$refs.formRecovery.reset();
+      postSendCode(email) {
+        if (email) {
+          this.axios.post("api/recovery-password/", {email: email}).then((res) => {
+            this.recover_email = email;
+            this.overlay = true;
+            this.closeDialogs();
+            this.overlay = false;
+            this.dialog_sendcode = true;
+            this.snackbar = true;
+            this.text = "We have sent a recovery message to your email.";
+            this.color = "success";
+            this.$refs.formRecovery.reset();
+          }).catch((error) => {
+            this.snackbar = true;
+            this.text = error.response.data;
+            this.color = "error";
+          })
         }
       },
-      postvalidateCode() {
+      postVerifyCode() {
         if (this.$refs.formVerifyCode.validate()) {
-          this.overlay = true;
-          this.closeDialogs();
-          this.overlay = false;
-          this.dialog_changePasswd = true;
-          this.$refs.formVerifyCode.reset();
+          this.axios.post("api/verify-tk-recover/", {email: this.recover_email, token: this.user.code}).then((res) => {
+            this.overlay = true;
+            this.closeDialogs();
+            this.overlay = false;
+            this.dialog_changePasswd = true;
+            this.$refs.formVerifyCode.reset();
+          }).catch((error) => {
+            this.user.code = null;
+            this.snackbar = true;
+            this.text = error.response.data;
+            this.color = "error";
+          })
         }
       },
-      postchangePasswd() {
+      postChangePasswd() {
         if (this.$refs.formChangePasswd.validate()) {
-          this.overlay = true;
-          this.closeDialogs();
-          this.overlay = false;
-          this.snackbar = true;
-          this.text = "Password changed successfully.";
-          this.color = "success";
-          this.$refs.formChangePasswd.reset();
+          this.axios.post("api/change-password/", {email: this.recover_email, password: this.user.passwd}).then((res) => {
+            this.overlay = true;
+            this.closeDialogs();
+            this.overlay = false;
+            this.snackbar = true;
+            this.text = "Password changed successfully.";
+            this.color = "success";
+            this.$refs.formChangePasswd.reset();
+          }).catch((error) => {
+            this.user.passwd = null;
+            this.user.passwdconfirm = null;
+            this.snackbar = true;
+            this.text = error.response.data;
+            this.color = "error";
+          })
         }
       },
       postRegister() {
@@ -619,17 +642,28 @@
         this.axios.defaults.headers.common.Authorization = null;
         this.verifyStatus();
       },
-      closeDialogs() {
+      closeDialogs() { // CLOSE ALL DIALOGS
         this.dialog_login = false;
         this.dialog_register = false;
         this.dialog_recovery = false;
         this.dialog_sendcode = false;
         this.dialog_changePasswd = false;
       },
-      recoverypassword() {
-        this.dialog_login = false;
-        this.dialog_register = false;
-        this.dialog_recovery = true;
+      openDialogRecoveryPasswd() {
+        if (this.recover_email) {
+          this.dialog_login = false;
+          this.dialog_register = false;
+          this.dialog_recovery = false; // THIS MODAL IS THE MAIN OF THE FUNCTION
+          this.dialog_sendcode = true;
+          this.dialog_changePasswd = false;
+          this.postSendCode(this.recover_email);
+        } else {
+          this.dialog_login = false;
+          this.dialog_register = false;
+          this.dialog_recovery = true; // THIS MODAL IS THE MAIN OF THE FUNCTION
+          this.dialog_sendcode = false;
+          this.dialog_changePasswd = false;
+        }
       },
       requestRecovery() {
         this.axios.post("api/recovery-email/", this.user.email).then(() => {

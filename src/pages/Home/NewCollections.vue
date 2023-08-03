@@ -23,7 +23,10 @@
               <!-- <span class="price h7">$ {{ object.last_bid.value }} Dollars</span> -->
             </div>
           </div>
-          <span class="h7 weight tend"> Minimun Bid $ {{ object.init_price }} </span>
+          <span class="h7 weight tend"> Minimun Bid $ 
+            <span v-if="object.last_bid.user">{{ parseFloat(object.last_bid.value) +100 }} </span>
+            <span v-else>{{ object.last_bid.value }} </span>
+          </span>
           <v-btn
             class="b1 h8-em mt-8"
             @click="openBid(object)"
@@ -366,8 +369,10 @@
         }
       },
       close() {
+        this.bids = [{user: "Loading...", id: null, value: null}];
         this.dialog = false;
         this.$refs.form.reset();
+        clearInterval(this.interval_bid);
       },
       addToken(value) {
         if (value) {
