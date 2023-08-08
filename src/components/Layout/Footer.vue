@@ -7,9 +7,14 @@
         <aside class="contright divrow">
           <div class="divcol">
             <div class="divrow" style="cursor: pointer;">
-              <a v-for="(item, index) in dataIconos" v-bind:key="index"
-                class="divpadd paddleftdel marginright" :href="item.link" target="_blank">
-                <v-icon large color="#FFFFFF !important">{{ item.icon }}</v-icon>
+              <a class="divpadd paddleftdel marginright" href="https://www.instagram.com/laraalcantara/" target="_blank">
+                <img src="@/assets/icons/instagram.svg" style="width: clamp(2em, 2vw, 3em)">
+              </a>
+              <a class="divpadd paddleftdel marginright" href="https://www.instagram.com/laraalcantara/" target="_blank">
+                <img src="@/assets/icons/gmail.svg" style="width: clamp(2em, 2vw, 3em)">
+              </a>
+              <a class="divpadd paddleftdel marginright" href="https://www.instagram.com/laraalcantara/" target="_blank">
+                <img src="@/assets/icons/telegram.svg" style="width: clamp(2em, 2vw, 3em)">
               </a>
             </div>
           </div>
@@ -22,41 +27,5 @@
     </v-row>
   </v-footer>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      dataFooter : [
-        {
-          title: "Contact",
-          footerLink: [
-            {
-              link: "Telegram"
-            },
-            {
-              link: "Whatsapp"
-            }
-          ]
-        },
-      ],
-      dataIconos: [
-        {
-          icon: "mdi-instagram",
-          link: "https://www.instagram.com/laraalcantara/"
-        },
-        {
-          icon: "mdi-mail",
-          link: "https://www.instagram.com/laraalcantara/"
-        },
-        {
-          icon: "mdi-telegram",
-          link: "https://www.instagram.com/laraalcantara/"
-        }
-      ]
-    }
-  }
-}
-</script>
 
 <style src="./Layout.scss" lang="scss" />
