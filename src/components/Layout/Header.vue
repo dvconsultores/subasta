@@ -10,7 +10,7 @@
             <!-- toggle -->
             <!-- logo -->
             <router-link to="/">
-              <span class="contmiddle h6-em center padd">LARA ALCANTARA</span>
+              <span class="contmiddle h6-em center padd" style="color: rgb(77, 75, 75)">LARA ALCANTARA</span>
             </router-link>
           </aside>
 
