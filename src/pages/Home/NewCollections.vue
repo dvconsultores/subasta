@@ -302,7 +302,7 @@
         price: 0,
         tab: null,
         items: ["Details", "Bids"],
-        bids: [{user: "Loading...", id: null, value: null}],
+        bids: [{user: "Please Login to view the bids", id: null, value: null}],
         selected: {last_bid: {value: 0, user: null}},
         dataNewCollections: [{}],
         interval_auction: null,
@@ -327,7 +327,12 @@
       fetchBids() {
         if (localStorage.getItem('Authorization')) {
           this.axios.get("api/bid/?auction_id="+this.selected.id).then((res) => {
-            this.bids = res.data[0].id ? res.data : [{user: "Loading...", id: null, value: null}];
+            if(res.data.length > 0){
+              this.bids = res.data[0].id ? res.data : [{user: "Loading...", id: null, value: null}];
+            } else {
+              this.bids = [{user: "No bids...", id: null, value: null}];
+            }
+            
           })
         }
       },

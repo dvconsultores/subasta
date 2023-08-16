@@ -565,6 +565,7 @@
         }
       },
       postSendCode(email) {
+        this.overlay = true;
         if (email) {
           this.axios.post("api/recovery-password/", {email: email}).then((res) => {
             this.recover_email = email;
@@ -580,10 +581,12 @@
             this.snackbar = true;
             this.text = error.response.data;
             this.color = "error";
+            this.overlay = false;
           })
         }
       },
       postVerifyCode() {
+        this.overlay = true;
         if (this.$refs.formVerifyCode.validate()) {
           this.axios.post("api/verify-tk-recover/", {email: this.recover_email, token: this.user.code}).then((res) => {
             this.overlay = true;
@@ -596,10 +599,12 @@
             this.snackbar = true;
             this.text = error.response.data;
             this.color = "error";
+            this.overlay = false;
           })
         }
       },
       postChangePasswd() {
+        this.overlay = true;
         if (this.$refs.formChangePasswd.validate()) {
           this.axios.post("api/change-password/", {email: this.recover_email, password: this.user.passwd}).then((res) => {
             this.overlay = true;
@@ -615,10 +620,12 @@
             this.snackbar = true;
             this.text = error.response.data;
             this.color = "error";
+            this.overlay = false;
           })
         }
       },
       postRegister() {
+        this.overlay = true;
         if (this.$refs.form1.validate()) {
           this.overlay = true;
           this.axios.post("api/user/", this.user).then((res) => {
@@ -628,6 +635,7 @@
             this.finalizePost("Welcome, successfully registered: " + this.user.email, "success")
           }).catch((error) => {
             this.finalizePost(error.response.data, "error")
+            this.overlay = false;
           })
         }
       },
@@ -641,6 +649,7 @@
         localStorage.removeItem('Username');
         this.axios.defaults.headers.common.Authorization = null;
         this.verifyStatus();
+        location.reload();
       },
       closeDialogs() { // CLOSE ALL DIALOGS
         this.dialog_login = false;
