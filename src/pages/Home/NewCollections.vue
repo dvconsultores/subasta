@@ -31,7 +31,7 @@
             class="b1 h8-em mt-8"
             @click="openBid(object)"
             color="#D8D8D8"
-            >Place a Bid</v-btn
+            >Place a Bid/More info</v-btn
           >
         </aside>
       </v-card>
