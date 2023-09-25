@@ -86,9 +86,14 @@
                           <span class="text-h6">
                             <div style="text-align: justify" class="mt-3">
                               <v-icon size="large">mdi-clock</v-icon>
-                              <span class="text-h7 ml-2">Auction ends in</span>
-                              <p class="text-h6 mt-2 mb-2">{{selected.ends_in}}</p>
-
+                              <span v-if="selected.ends_in">
+                                <span class="text-h7 ml-2">Auction ends in:</span>
+                                <p class="text-h6 mt-2 mb-2">{{selected.ends_in}}</p>
+                              </span>
+                              <span v-else>
+                                <span class="text-h7 ml-2">Auction init in:</span>
+                                <p class="text-h6 mt-2 mb-2">{{selected.init_in}}</p>
+                              </span>
                               <v-form
                                 ref="form"
                                 v-model="valid"
