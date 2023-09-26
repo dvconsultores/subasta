@@ -20,6 +20,7 @@
           <div class="space">
             <span class="h7 weight">Bid</span>
             <div class="divrow acenter">
+              <!-- <span class="price h7">$ {{ object.last_bid.value }} Dollars</span> -->
             </div>
           </div>
           <span class="h7 weight tend"> Minimun Bid $ 
@@ -85,13 +86,9 @@
                           <span class="text-h6">
                             <div style="text-align: justify" class="mt-3">
                               <v-icon size="large">mdi-clock</v-icon>
-                              <span v-if="selected.ends_in">
-                                <span class="text-h7 ml-2">Auction ends in:</span>
-                                <p class="text-h6 mt-2 mb-2">{{selected.ends_in}}</p>
-                              </span>
-                              <span v-else>
-                                <span class="text-h7 ml-2">Auction starts on {{selected.datetime.init_date}} at {{selected.datetime.init_time}} EST and ends on {{selected.datetime.ends_date}} at {{selected.datetime.ends_time}} EST </span>
-                              </span>
+                              <span class="text-h7 ml-2">Auction ends in</span>
+                              <p class="text-h6 mt-2 mb-2">{{selected.ends_in}}</p>
+
                               <v-form
                                 ref="form"
                                 v-model="valid"
@@ -263,20 +260,6 @@
           </v-btn>
         </template>
       </v-snackbar>
-      <v-snackbar v-model="snackbar_b" :timeout="-1" :color="error" :top="true">
-        <b class="text-h6">This auction has not started yet.</b>
-
-        <template v-slot:action="{ attrs }">
-          <v-btn
-            class="b1 h8-em"
-            color="#D8D8D8"
-            v-bind="attrs"
-            @click="snackbar_b = false"
-          >
-            Close
-          </v-btn>
-        </template>
-      </v-snackbar>
     </v-row>
   </section>
 </template>
@@ -319,8 +302,8 @@
         price: 0,
         tab: null,
         items: ["Details", "Bids"],
-        bids: [{user: "Please Login to view the bids.", id: null, value: null}],
-        selected: {last_bid: {value: 0, user: null}, datetime: {}},
+        bids: [{user: "Please Login to view the bids", id: null, value: null}],
+        selected: {last_bid: {value: 0, user: null}},
         dataNewCollections: [{}],
         interval_auction: null,
         interval_bid: null,
@@ -344,23 +327,29 @@
       fetchBids() {
         if (localStorage.getItem('Authorization')) {
           this.axios.get("api/bid/?auction_id="+this.selected.id).then((res) => {
-            if (res.data[0]) {this.bids = res.data[0];}
-            this.bids = [{user: "No bids...", id: null, value: null}];
+            if(res.data.length > 0){
+              this.bids = res.data[0].id ? res.data : [{user: "Loading...", id: null, value: null}];
+            } else {
+              this.bids = [{user: "No bids...", id: null, value: null}];
+            }
+            
           })
         }
       },
       saveForm() {
-        this.overlay = true;
-        this.axios.post("api/bid/", this.bid).then((res) => {
-          this.bid = res.data
-          this.finalizePost(this.message_if_login+"Bid placed successfully", "success");
-        }).catch((error) => {
-          if (error.response.data.detail) {
-            this.finalizePost(error.response.data.detail, "error");
-          } else {
-            this.finalizePost(error.response.data, "error");
-          }
-        })
+        if (this.$refs.form.validate()) {
+          this.overlay = true;
+          this.axios.post("api/bid/", this.bid).then((res) => {
+            this.bid = res.data
+            this.finalizePost(this.message_if_login+"Bid placed successfully", "success");
+          }).catch((error) => {
+            if (error.response.data.detail) {
+              this.finalizePost(error.response.data.detail, "error");
+            } else {
+              this.finalizePost(error.response.data, "error");
+            }
+          })
+        }
       },
       finalizePost(message, color) {
         // Text for bid reult, success or error, Bid placed successfully for succes, An error ocurred for error
@@ -396,23 +385,19 @@
         }
       },
       postLogin() {
-        if (this.user.email && this.user.passwd) {
-          this.dialog_login = true;
-          this.axios.post("api/login/", {"email": this.user.email, "password": this.user.passwd}).then((res) => {
-            localStorage.setItem('Authorization', res.data.token);
-            localStorage.setItem('Username', res.data.username);
-            this.addToken(localStorage.getItem('Authorization'));
-            this.message_if_login = "Login and ";
-            this.saveForm();
-            location.reload();
-          }).catch((error) => {
-            this.finalizePost(error.response.data, "error")
-          })
-        }
+        this.dialog_login = true;
+        this.axios.post("api/login/", {"email": this.user.email, "password": this.user.passwd}).then((res) => {
+          localStorage.setItem('Authorization', res.data.token);
+          localStorage.setItem('Username', res.data.username);
+          this.addToken(localStorage.getItem('Authorization'));
+          this.message_if_login = "Login and ";
+          this.saveForm();
+        }).catch((error) => {
+          this.finalizePost(error.response.data, "error")
+        })
       },
       closeDialogs() {
         this.dialog_login = false;
-        this.overlay = false;
       },
     },
   };

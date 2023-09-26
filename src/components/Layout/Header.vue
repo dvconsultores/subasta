@@ -552,13 +552,14 @@
         this.verifyStatus();
       },
       postLogin() {
-        if (this.$refs.form.validate()) {
+        if (this.user.email && this.user.passwd) {
           this.overlay = true;
           this.axios.post("api/login/", {"email": this.user.email, "password": this.user.passwd}).then((res) => {
-            localStorage.setItem('Authorization', res.data.token)
-            localStorage.setItem('Username', res.data.username)
+            localStorage.setItem('Authorization', res.data.token);
+            localStorage.setItem('Username', res.data.username);
             this.addToken(localStorage.getItem('Authorization'));
-            this.finalizePost("Welcome: " + this.user.email, "success")
+            this.finalizePost("Welcome: " + this.user.email, "success");
+            location.reload();
           }).catch((error) => {
             this.finalizePost(error.response.data, "error")
           })
@@ -641,6 +642,7 @@
         localStorage.removeItem('Username');
         this.axios.defaults.headers.common.Authorization = null;
         this.verifyStatus();
+        location.reload();
       },
       closeDialogs() { // CLOSE ALL DIALOGS
         this.dialog_login = false;
