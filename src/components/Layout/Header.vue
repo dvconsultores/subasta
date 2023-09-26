@@ -10,7 +10,11 @@
             <!-- toggle -->
             <!-- logo -->
             <router-link to="/">
-              <span class="contmiddle h6-em center padd">LARA ALCANTARA</span>
+              <span
+                class="contmiddle h6-em center padd"
+                style="color: rgb(77, 75, 75)"
+                >LARA ALCANTARA</span
+              >
             </router-link>
           </aside>
 
@@ -66,7 +70,15 @@
                             required
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12"><a @click="openDialogRecoveryPasswd" style="color: aqua;"><div style="text-align: center;">Forgot my Password</div></a></v-col>                      
+                        <v-col cols="12"
+                          ><a
+                            @click="openDialogRecoveryPasswd"
+                            style="color: aqua"
+                            ><div style="text-align: center">
+                              Forgot my Password
+                            </div></a
+                          ></v-col
+                        >
                       </v-row>
                     </v-container>
                     <small>*indicates required field</small>
@@ -89,11 +101,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    class="b1 h8-em"
-                    color="#D8D8D8"
-                    @click="closeDialogs"
-                  >
+                  <v-btn class="b1 h8-em" color="#D8D8D8" @click="closeDialogs">
                     Close
                   </v-btn>
                   <v-btn class="b1 h8-em" color="green" @click="signUp">
@@ -133,7 +141,7 @@
                             :rules="emailRules"
                             required
                           ></v-text-field>
-                        </v-col>                  
+                        </v-col>
                       </v-row>
                     </v-container>
                     <small>*indicates required field</small>
@@ -156,11 +164,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    class="b1 h8-em"
-                    color="#D8D8D8"
-                    @click="closeDialogs"
-                  >
+                  <v-btn class="b1 h8-em" color="#D8D8D8" @click="closeDialogs">
                     Close
                   </v-btn>
                 </v-card-actions>
@@ -197,7 +201,7 @@
                             :rules="passwdRules"
                             required
                           ></v-text-field>
-                        </v-col>                  
+                        </v-col>
                       </v-row>
                     </v-container>
                     <small>*indicates required field</small>
@@ -220,14 +224,14 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    class="b1 h8-em"
-                    color="#D8D8D8"
-                    @click="closeDialogs"
-                  >
+                  <v-btn class="b1 h8-em" color="#D8D8D8" @click="closeDialogs">
                     Close
                   </v-btn>
-                  <v-btn class="b1 h8-em" color="green" @click="openDialogRecoveryPasswd">
+                  <v-btn
+                    class="b1 h8-em"
+                    color="green"
+                    @click="openDialogRecoveryPasswd"
+                  >
                     Resend Code
                   </v-btn>
                 </v-card-actions>
@@ -236,7 +240,11 @@
           </v-row>
 
           <v-row justify="center">
-            <v-dialog v-model="dialog_changePasswd" persistent max-width="600px">
+            <v-dialog
+              v-model="dialog_changePasswd"
+              persistent
+              max-width="600px"
+            >
               <v-overlay z-index="5" color="black" :value="overlay">
                 <v-progress-circular
                   indeterminate
@@ -274,7 +282,7 @@
                             :rules="passwdRules"
                             required
                           ></v-text-field>
-                        </v-col>              
+                        </v-col>
                       </v-row>
                     </v-container>
                     <small>*indicates required field</small>
@@ -297,14 +305,14 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    class="b1 h8-em"
-                    color="#D8D8D8"
-                    @click="closeDialogs"
-                  >
+                  <v-btn class="b1 h8-em" color="#D8D8D8" @click="closeDialogs">
                     Close
                   </v-btn>
-                  <v-btn class="b1 h8-em" color="green" @click="openDialogRecoveryPasswd">
+                  <v-btn
+                    class="b1 h8-em"
+                    color="green"
+                    @click="openDialogRecoveryPasswd"
+                  >
                     Resend Code
                   </v-btn>
                 </v-card-actions>
@@ -396,11 +404,7 @@
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn
-                    class="b1 h8-em"
-                    color="#D8D8D8"
-                    @click="closeDialogs"
-                  >
+                  <v-btn class="b1 h8-em" color="#D8D8D8" @click="closeDialogs">
                     Close
                   </v-btn>
                 </v-card-actions>
@@ -426,23 +430,30 @@
             <v-menu offset-y>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn v-bind="attrs" v-on="on">
-                  {{username}}
+                  {{ username }}
                 </v-btn>
               </template>
               <v-list>
                 <v-list-item
-                  v-for="item in [{id: 0, action: 'Logout'}]"
+                  v-for="item in [{ id: 0, action: 'Logout' }]"
                   :key="item.id"
                   @click="logOut()"
                 >
-                  <v-list-item-title>{{item.action}}</v-list-item-title>
+                  <v-list-item-title>{{ item.action }}</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
           </aside>
           <aside class="contright" v-else>
-            <v-btn class="walletButton" color="#656565" @click="dialog_login = true">
+            <v-btn
+              class="walletButton"
+              color="#656565"
+              @click="dialog_login = true"
+            >
               Login
+            </v-btn>
+            <v-btn class="walletButton" style="margin-left: 3px;" color="green" @click="signUp">
+              Sign Up
             </v-btn>
           </aside>
         </v-col>
@@ -454,120 +465,122 @@
 </template>
 
 <script>
-  import MenuHeader from "./MenuHeader.vue";
-  export default {
-    name: "Header",
-    components: {
-      MenuHeader,
-    },
-    i18n: require("./i18n"),
-    created() {
-      this.element = document.getElementById("theme");
-      const theme = "light"; //localStorage.getItem("theme");
-      if (theme) {
-        this.CambiarTheme(theme);
-      }
-      if (theme == "light") {
-        this.themeButton = true;
-      }
-      if (theme == "dark") {
-        this.themeButton = false;
-      }
-    },
-    data() {
-      return {
-        username: null,
-        themeButton: false,
-        dataHeader: [],
-        dialog_login: false,
-        dialog_register: false,
-        dialog_recovery: false,
-        dialog_sendcode: false,
-        dialog_changePasswd: false,
-        valid: true,
-        loading: false,
-        text: "",
-        color: "success",
-        recover_email: null,
-        user: {
-          passwd: "",
-          first_name: "",
-          last_name: "",
-          email: "",
-          number: "",
-          code: "",
-          passwdconfirm: "",
-        },
-        snackbar: false,
-        overlay: false,
-        passwdRules: [
-          (v) => !!v || "Required",
-        ],
-        emailRules: [
-          (v) =>
-            /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
-            "E-mail must be valid",
-        ],
-        interval: null,
-        token: null,
-      };
-    },
-    mounted() {
-      this.addToken(localStorage.getItem('Authorization'));
+import MenuHeader from "./MenuHeader.vue";
+export default {
+  name: "Header",
+  components: {
+    MenuHeader,
+  },
+  i18n: require("./i18n"),
+  created() {
+    this.element = document.getElementById("theme");
+    const theme = "light"; //localStorage.getItem("theme");
+    if (theme) {
+      this.CambiarTheme(theme);
+    }
+    if (theme == "light") {
+      this.themeButton = true;
+    }
+    if (theme == "dark") {
+      this.themeButton = false;
+    }
+  },
+  data() {
+    return {
+      username: null,
+      themeButton: false,
+      dataHeader: [],
+      dialog_login: false,
+      dialog_register: false,
+      dialog_recovery: false,
+      dialog_sendcode: false,
+      dialog_changePasswd: false,
+      valid: true,
+      loading: false,
+      text: "",
+      color: "success",
+      recover_email: null,
+      user: {
+        passwd: "",
+        first_name: "",
+        last_name: "",
+        email: "",
+        number: "",
+        code: "",
+        passwdconfirm: "",
+      },
+      snackbar: false,
+      overlay: false,
+      passwdRules: [(v) => !!v || "Required"],
+      emailRules: [
+        (v) =>
+          /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v) ||
+          "E-mail must be valid",
+      ],
+      interval: null,
+      token: null,
+    };
+  },
+  mounted() {
+    this.addToken(localStorage.getItem("Authorization"));
+    this.verifyStatus();
+    this.interval = setInterval(() => {
       this.verifyStatus();
-      this.interval = setInterval(() => {this.verifyStatus()}, 10000); 
+    }, 10000);
+  },
+  methods: {
+    verifyStatus() {
+      this.username = localStorage.getItem("Username");
+      this.token = localStorage.getItem("Authorization");
     },
-    methods: {
-      verifyStatus() {
-        this.username = localStorage.getItem('Username');
-        this.token = localStorage.getItem('Authorization');
-      },
-      ShowDrawer() {
-        this.$refs.menu.ShowDrawer();
-      },
-      CambiarTheme(theme) {
-        this.$store.dispatch("CambiarTheme", { theme, element: this.element });
-        this.themeButton = !this.themeButton;
-      },
-      CambiarTheme2(theme) {
-        this.$refs.menu.OverlayMethod(theme);
-      },
-      addToken(value) {
-        if (value) {
-          this.username = localStorage.getItem('Username');
-          this.axios.defaults.headers.common.Authorization = 'token ' + value;
-        }
-      },
-      finalizePost(message, color) {
-        // Text for bid reult, success or error, Bid placed successfully for succes, An error ocurred for error
-        this.text = message;
-        // Success or error dependeing on result
-        this.color = color;
-        // Timeout
-        this.dialog_login = false;
-        this.snackbar = true;
-        this.overlay = false;
-        this.closeDialogs();
-        this.$refs.form.reset();
-        this.verifyStatus();
-      },
-      postLogin() {
-        if (this.user.email && this.user.passwd) {
-          this.overlay = true;
-          this.axios.post("api/login/", {"email": this.user.email, "password": this.user.passwd}).then((res) => {
-            localStorage.setItem('Authorization', res.data.token);
-            localStorage.setItem('Username', res.data.username);
-            this.addToken(localStorage.getItem('Authorization'));
-            this.finalizePost("Welcome: " + this.user.email, "success");
-            location.reload();
-          }).catch((error) => {
-            this.finalizePost(error.response.data, "error")
-          })
-        }
-      },
-      postSendCode(email) {
-        if (email) {
-          this.axios.post("api/recovery-password/", {email: email}).then((res) => {
+    ShowDrawer() {
+      this.$refs.menu.ShowDrawer();
+    },
+    CambiarTheme(theme) {
+      this.$store.dispatch("CambiarTheme", { theme, element: this.element });
+      this.themeButton = !this.themeButton;
+    },
+    CambiarTheme2(theme) {
+      this.$refs.menu.OverlayMethod(theme);
+    },
+    addToken(value) {
+      if (value) {
+        this.username = localStorage.getItem("Username");
+        this.axios.defaults.headers.common.Authorization = "token " + value;
+      }
+    },
+    finalizePost(message, color) {
+      // Text for bid reult, success or error, Bid placed successfully for succes, An error ocurred for error
+      this.text = message;
+      // Success or error dependeing on result
+      this.color = color;
+      // Timeout
+      this.dialog_login = false;
+      this.snackbar = true;
+      this.overlay = false;
+      this.closeDialogs();
+      this.$refs.form.reset();
+      this.verifyStatus();
+    },
+    postLogin() {
+      if (this.$refs.form.validate()) {
+        this.overlay = true;
+        this.axios.post("api/login/", {email: this.user.email,password: this.user.passwd,}).then((res) => {
+          localStorage.setItem("Authorization", res.data.token);
+          localStorage.setItem("Username", res.data.username);
+          this.addToken(localStorage.getItem("Authorization"));
+          this.finalizePost("Welcome: " + this.user.email, "success");
+        }).catch((error) => {
+          this.finalizePost(error.response.data, "error");
+        });
+      }
+    },
+    postSendCode(email) {
+      this.overlay = true;
+      if (email) {
+        this.axios
+          .post("api/recovery-password/", { email: email })
+          .then((res) => {
             this.recover_email = email;
             this.overlay = true;
             this.closeDialogs();
@@ -577,32 +590,48 @@
             this.text = "We have sent a recovery message to your email.";
             this.color = "success";
             this.$refs.formRecovery.reset();
-          }).catch((error) => {
+          })
+          .catch((error) => {
             this.snackbar = true;
             this.text = error.response.data;
             this.color = "error";
+            this.overlay = false;
+          });
+      }
+    },
+    postVerifyCode() {
+      this.overlay = true;
+      if (this.$refs.formVerifyCode.validate()) {
+        this.axios
+          .post("api/verify-tk-recover/", {
+            email: this.recover_email,
+            token: this.user.code,
           })
-        }
-      },
-      postVerifyCode() {
-        if (this.$refs.formVerifyCode.validate()) {
-          this.axios.post("api/verify-tk-recover/", {email: this.recover_email, token: this.user.code}).then((res) => {
+          .then((res) => {
             this.overlay = true;
             this.closeDialogs();
             this.overlay = false;
             this.dialog_changePasswd = true;
             this.$refs.formVerifyCode.reset();
-          }).catch((error) => {
+          })
+          .catch((error) => {
             this.user.code = null;
             this.snackbar = true;
             this.text = error.response.data;
             this.color = "error";
+            this.overlay = false;
+          });
+      }
+    },
+    postChangePasswd() {
+      this.overlay = true;
+      if (this.$refs.formChangePasswd.validate()) {
+        this.axios
+          .post("api/change-password/", {
+            email: this.recover_email,
+            password: this.user.passwd,
           })
-        }
-      },
-      postChangePasswd() {
-        if (this.$refs.formChangePasswd.validate()) {
-          this.axios.post("api/change-password/", {email: this.recover_email, password: this.user.passwd}).then((res) => {
+          .then((res) => {
             this.overlay = true;
             this.closeDialogs();
             this.overlay = false;
@@ -610,74 +639,88 @@
             this.text = "Password changed successfully.";
             this.color = "success";
             this.$refs.formChangePasswd.reset();
-          }).catch((error) => {
+          })
+          .catch((error) => {
             this.user.passwd = null;
             this.user.passwdconfirm = null;
             this.snackbar = true;
             this.text = error.response.data;
             this.color = "error";
+            this.overlay = false;
+          });
+      }
+    },
+    postRegister() {
+      this.overlay = true;
+      if (this.$refs.form1.validate()) {
+        this.overlay = true;
+        this.axios
+          .post("api/user/", this.user)
+          .then((res) => {
+            localStorage.setItem("Authorization", res.data.token);
+            localStorage.setItem("Username", res.data.username);
+            this.addToken(localStorage.getItem("Authorization"));
+            this.finalizePost(
+              "Welcome, successfully registered: " + this.user.email,
+              "success"
+            );
           })
-        }
-      },
-      postRegister() {
-        if (this.$refs.form1.validate()) {
-          this.overlay = true;
-          this.axios.post("api/user/", this.user).then((res) => {
-            localStorage.setItem('Authorization', res.data.token)
-            localStorage.setItem('Username', res.data.username)
-            this.addToken(localStorage.getItem('Authorization'));
-            this.finalizePost("Welcome, successfully registered: " + this.user.email, "success")
-          }).catch((error) => {
-            this.finalizePost(error.response.data, "error")
-          })
-        }
-      },
-      signUp() {
-        this.dialog_login = false;
-        this.dialog_register = true;
-      },
-      logOut() {
-        clearInterval(this.interval);
-        localStorage.removeItem('Authorization');
-        localStorage.removeItem('Username');
-        this.axios.defaults.headers.common.Authorization = null;
-        this.verifyStatus();
-        location.reload();
-      },
-      closeDialogs() { // CLOSE ALL DIALOGS
+          .catch((error) => {
+            this.finalizePost(error.response.data, "error");
+            this.overlay = false;
+          });
+      }
+    },
+    signUp() {
+      this.dialog_login = false;
+      this.dialog_register = true;
+    },
+    logOut() {
+      clearInterval(this.interval);
+      localStorage.removeItem("Authorization");
+      localStorage.removeItem("Username");
+      this.axios.defaults.headers.common.Authorization = null;
+      this.verifyStatus();
+      location.reload();
+    },
+    closeDialogs() {
+      // CLOSE ALL DIALOGS
+      this.dialog_login = false;
+      this.dialog_register = false;
+      this.dialog_recovery = false;
+      this.dialog_sendcode = false;
+      this.dialog_changePasswd = false;
+    },
+    openDialogRecoveryPasswd() {
+      if (this.recover_email) {
         this.dialog_login = false;
         this.dialog_register = false;
-        this.dialog_recovery = false;
+        this.dialog_recovery = false; // THIS MODAL IS THE MAIN OF THE FUNCTION
+        this.dialog_sendcode = true;
+        this.dialog_changePasswd = false;
+        this.postSendCode(this.recover_email);
+      } else {
+        this.dialog_login = false;
+        this.dialog_register = false;
+        this.dialog_recovery = true; // THIS MODAL IS THE MAIN OF THE FUNCTION
         this.dialog_sendcode = false;
         this.dialog_changePasswd = false;
-      },
-      openDialogRecoveryPasswd() {
-        if (this.recover_email) {
-          this.dialog_login = false;
-          this.dialog_register = false;
-          this.dialog_recovery = false; // THIS MODAL IS THE MAIN OF THE FUNCTION
-          this.dialog_sendcode = true;
-          this.dialog_changePasswd = false;
-          this.postSendCode(this.recover_email);
-        } else {
-          this.dialog_login = false;
-          this.dialog_register = false;
-          this.dialog_recovery = true; // THIS MODAL IS THE MAIN OF THE FUNCTION
-          this.dialog_sendcode = false;
-          this.dialog_changePasswd = false;
-        }
-      },
-      requestRecovery() {
-        this.axios.post("api/recovery-email/", this.user.email).then(() => {
+      }
+    },
+    requestRecovery() {
+      this.axios
+        .post("api/recovery-email/", this.user.email)
+        .then(() => {
           this.snackbar = true;
           this.text = "We have sent a recovery message to your email.";
           this.color = "success";
-        }).catch(() => {
-          this.finalizePost("An error has occured.", "error")
         })
-      }
+        .catch(() => {
+          this.finalizePost("An error has occured.", "error");
+        });
     },
-  };
+  },
+};
 </script>
 
 <style src="./Layout.scss" lang="scss" />

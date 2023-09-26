@@ -280,6 +280,7 @@
     }
     .v-card {
       padding: clamp(2em, 3vw, 3em);
+      min-width: 270px !important;
       height: max-content;
       box-shadow: $sombra-cartas !important;
       transition: 0.2s ease-in-out;

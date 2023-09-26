@@ -1,0 +1,56 @@
+/* global colors */
+:root {
+  --fondo: #FFFFFF;
+  --color: #111011;
+  --colorInverted: #FFFFFF;
+  --colorCartas: #f7f7f7;
+  --colorCartasInverted: #000000;
+  --colorCartas2: #f7f7f7;
+  --colorCartas3: #ffffff;
+  --colorFondoCartas: #f7f7f7;
+  --colorHover: #eeeeee;
+  --colorScroll: #656565;
+  --colorCartaScroll: rgb(224, 224, 224);
+  --colorFooter: #656565;
+  --mix-blend-mode: multiply;
+}
+:is(span, p, h1, h2, h3, h4, h5, h6, .v-list-item__title, .v-btn span, button, label) {
+  color: #111011;
+}
+:is(.v-icon, a) {
+  color: #111011 !important;
+}
+
+/* personal clases */
+.color {
+  color: #111011 !important;
+}
+.colorInverted {
+  color: #FFFFFF !important;
+}
+.colorCartas {
+  background-color: #FFFFFF !important;
+}
+.colorCartasInverted {
+  background-color: #000000 !important;
+}
+.filter {
+  filter: invert(0%) !important;
+}
+.filterInverted {
+  filter: invert(100%) !important;
+}
+.colorSVG {
+  fill: #FFFFFF !important;
+}
+.colorSVGInverted {
+  fill: #111011 !important;
+}
+.colorCartas2 {
+  background-color: #B5C9F1 !important;
+}
+.colorFooter {
+  color: #FFFFFF !important;
+}
+
+/* ////////////////////////////////////////////// */
