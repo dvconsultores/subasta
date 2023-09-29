@@ -9,31 +9,33 @@
       v-for="(item, index) in dataNewCollections"
       :key="index"
     >
-      <v-card
-        v-for="(object, index) in item.collection"
-        :key="index"
-        color="var(--colorCartas3)"
-      >
-        <img class="images" :src="object.image" :alt="'Collection Image #' + index"/>
-        <a href="#" class="tl h6">{{ object.title }}</a>
-        <aside class="sectdown divcol">
-          <div class="space">
-            <span class="h7 weight">Bid</span>
-            <div class="divrow acenter">
+      <div class="contdown__wrapper">
+        <v-card
+          v-for="(object, index) in item.collection"
+          :key="index"
+          color="var(--colorCartas3)"
+        >
+          <img class="images" :src="object.image" :alt="'Collection Image #' + index"/>
+          <a href="#" class="tl h6" :title="object.title">{{ object.title }}</a>
+          <aside class="sectdown divcol">
+            <div class="space">
+              <span class="h7 weight">Bid</span>
+              <div class="divrow acenter">
+              </div>
             </div>
-          </div>
-          <span class="h7 weight tend"> Minimun Bid $ 
-            <span v-if="object.last_bid.user">{{ parseFloat(object.last_bid.value) +100 }} </span>
-            <span v-else>{{ object.last_bid.value }} </span>
-          </span>
-          <v-btn
-            class="b1 h8-em mt-8"
-            @click="openBid(object)"
-            color="#D8D8D8"
-            >Place a Bid/More info</v-btn
-          >
-        </aside>
-      </v-card>
+            <span class="h7 weight tend"> Minimun Bid $ 
+              <span v-if="object.last_bid.user">{{ parseFloat(object.last_bid.value) +100 }} </span>
+              <span v-else>{{ object.last_bid.value }} </span>
+            </span>
+            <v-btn
+              class="b1 h8-em mt-8"
+              @click="openBid(object)"
+              color="#D8D8D8"
+              >Place a Bid/More info</v-btn
+            >
+          </aside>
+        </v-card>  
+      </div>
     </aside>
     <!-- dialog -->
     <v-row justify="center">

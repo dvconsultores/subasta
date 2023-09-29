@@ -245,6 +245,9 @@
 /////////////////////////////////////////////////////////////////////
 // newCollections
 #newCollections {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   font-size: 14px;
   aside:nth-child(1) {
     margin-bottom: 2em;
@@ -268,12 +271,22 @@
     }
   }
   .contdown {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: max-content;
-    grid-gap: 2em;
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
     background-color: var(--colorFondoCartas);
-    padding: 5%;
+
+    &__wrapper {
+      width: 100%;
+      max-width: 1800px;
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 270px), 1fr));
+      grid-template-rows: max-content;
+      grid-gap: 2em;
+      padding: 5%;
+    }
+
+
     .v-card:is(:hover, :focus) {
       transform: translateY(-1%);
       box-shadow: inset 0 0 1px 2px #656565 !important;
@@ -287,12 +300,18 @@
       .images {
         width: 100%;
         height: clamp(15em, 19vw, 19em);
+        object-fit: cover;
       }
       .weight {
         color: #bcbcbc !important;
         font-weight: 400 !important;
       }
       .tl {
+        max-width: 100%;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
         text-decoration: underline;
         font-weight: 500 !important;
       }
