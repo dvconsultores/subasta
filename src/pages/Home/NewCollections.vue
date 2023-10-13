@@ -346,8 +346,8 @@
       fetchBids() {
         if (localStorage.getItem('Authorization')) {
           this.axios.get("api/bid/?auction_id="+this.selected.id).then((res) => {
-            if (res.data[0]) {this.bids = res.data[0];}
-            this.bids = [{user: "No bids...", id: null, value: null}];
+            if (res.data[0]) {this.bids = res.data[0];
+            } else {this.bids = [{user: "No bids...", id: null, value: null}];}
           })
         }
       },
